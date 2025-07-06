@@ -38,6 +38,7 @@ if ($login->isUserLoggedIn() == true) {
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   <!-- CSS  -->
    <link href="css/login.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+   <link rel=icon href='img/logo-icon.png' sizes="32x32" type="image/png">
 </head>
 <body style="background-image: url('img/login.png'); background-size: cover; background-repeat: no-repeat; background-attachment: fixed;">
 
