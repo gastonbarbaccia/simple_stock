@@ -62,7 +62,6 @@ $title = "Inventario | Simple Stock";
 		<table id="miTabla" class="table table-hover">
 			<thead>
 				<tr>
-					<th>ID</th>
 					<th>Código</th>
 					<th>Nombre</th>
 					<th>Precio</th>
@@ -85,7 +84,6 @@ $title = "Inventario | Simple Stock";
 					}
 
 					echo "<tr>
-					<td>{$row['id_producto']}</td>
 					<td>{$row['codigo_producto']}</td>
 					<td>{$row['nombre_producto']}</td>
 					<td>$ {$row['precio_producto']}</td>
