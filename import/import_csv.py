@@ -4,10 +4,10 @@ from datetime import datetime
 
 # Configurar conexión
 conn = mysql.connector.connect(
-    host='localhost',
-    user='root',
-    password='',
-    database='simple_stock'
+    host='srv1451.hstgr.io',
+    user='u666073011_stock',
+    password='IPa=dV9[f',
+    database='u666073011_stock'
 )
 cursor = conn.cursor()
 

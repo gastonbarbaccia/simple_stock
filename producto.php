@@ -106,13 +106,13 @@
                       <span class="item-quantity"><?php echo number_format($row['stock']);?></span>
                     </div>
 					<div class="col-sm-12">
-                      <span class="current-stock"> Precio venta consumidor final </span>
+                      <span class="current-stock"> Precio consumidor final </span>
                     </div>
 					<div class="col-sm-12">
                       <span class="item-price">$ <?php echo number_format($row['precio_producto_cons_final'],2);?></span>
                     </div>
 					<div class="col-sm-12">
-                      <span class="current-stock"> Precio venta reventa </span>
+                      <span class="current-stock"> Precio reventa </span>
                     </div>
 					<div class="col-sm-12">
                       <span class="item-price">$ <?php echo number_format($row['precio_producto_reventa'],2);?></span>
