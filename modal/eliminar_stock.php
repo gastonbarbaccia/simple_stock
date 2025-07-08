@@ -1,16 +1,16 @@
-<form class="form-horizontal"  method="post">
-<!-- Modal -->
-<div id="remove-stock" class="modal fade" role="dialog">
-  <div class="modal-dialog">
+<form class="form-horizontal" method="post">
+  <!-- Modal -->
+  <div id="remove-stock" class="modal fade" role="dialog">
+    <div class="modal-dialog">
 
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h4 class="modal-title">Eliminar Stock</h4>
-      </div>
-      <div class="modal-body">
-        
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">×</button>
+          <h4 class="modal-title">Eliminar Stock</h4>
+        </div>
+        <div class="modal-body">
+
           <div class="form-group">
             <label for="quantity" class="col-sm-2 control-label">Cantidad</label>
             <div class="col-sm-6">
@@ -18,20 +18,32 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="reference" class="col-sm-2 control-label">Referencia</label>
+            <label for="reference_remove" class="col-sm-2 control-label">Motivo</label>
             <div class="col-sm-6">
-              <input type="text" name="reference_remove" class="form-control" id="reference_remove" value="" placeholder="Referencia">
+              <select name="reference_remove" class="form-control" id="reference_remove" required>
+                <option value="">Seleccione un motivo</option>
+                <option value="Eliminicación por venta">Por venta</option>
+                <option value="Eliminación por otros motivos">Otros motivos</option>
+              </select>
             </div>
           </div>
-          
-        
+          <div class="form-group">
+            <label for="reference_remove_2" class="col-sm-2 control-label">Precio</label>
+            <div class="col-sm-6">
+              <select name="reference_remove_2" class="form-control" id="reference_remove_2" required>
+                <option value="">Seleccione un motivo</option>
+                <option value="<?php echo number_format($row['precio_producto_cons_final'], 2); ?>">Precio consumidor final $ <?php echo number_format($row['precio_producto_cons_final'], 2); ?></option>
+                <option value="<?php echo number_format($row['precio_producto_reventa'], 2); ?>">Precio reventa $ <?php echo number_format($row['precio_producto_reventa'], 2); ?></option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-primary">Guardar datos</button>
+        </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-		<button type="submit" class="btn btn-primary">Guardar datos</button>
-      </div>
-    </div>
 
+    </div>
   </div>
-</div>
 </form>
