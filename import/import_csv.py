@@ -40,16 +40,17 @@ for _, row in categorias.iterrows():
 for _, row in df.iterrows():
     codigo = row['codigo_producto']
     nombre = row['nombre_producto']
-    precio = row['precio_producto']
+    precio = row['precio_producto_cons_final']
+    precio2 = row['precio_producto_reventa']
     stock = row['stock']
     nombre_categoria = row['nombre_categoria']
     
     id_categoria = categoria_ids[nombre_categoria]
     
     cursor.execute("""
-        INSERT INTO products (codigo_producto, nombre_producto, date_added, precio_producto, stock, id_categoria)
-        VALUES (%s, %s, %s, %s, %s, %s)
-    """, (codigo, nombre, datetime.now(), precio, stock, id_categoria))
+        INSERT INTO products (codigo_producto, nombre_producto, date_added, precio_producto_cons_final, precio_producto_reventa , stock, id_categoria)
+        VALUES (%s, %s, %s, %s,%s, %s, %s)
+    """, (codigo, nombre, datetime.now(), precio, precio2, stock, id_categoria))
     conn.commit()
 
 cursor.close()

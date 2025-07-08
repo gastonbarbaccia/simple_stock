@@ -64,7 +64,8 @@ $title = "Inventario | Simple Stock";
 				<tr>
 					<th>Código</th>
 					<th>Nombre</th>
-					<th>Precio</th>
+					<th>Precio Cons. Final</th>
+					<th>Precio reventa</th>
 					<th>Cantidad</th>
 					<th>Categoría</th>
 				</tr>
@@ -86,7 +87,8 @@ $title = "Inventario | Simple Stock";
 					echo "<tr>
 					<td>{$row['codigo_producto']}</td>
 					<td>{$row['nombre_producto']}</td>
-					<td>$ {$row['precio_producto']}</td>
+					<td>$ {$row['precio_producto_cons_final']}</td>
+					<td>$ {$row['precio_producto_reventa']}</td>
 					<td>{$stockDisplay}</td>
 					<td>{$row['nombre_categoria']}</td>
 				</tr>";

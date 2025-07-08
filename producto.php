@@ -85,7 +85,7 @@
 				 <img class="item-img img-responsive" src="img/stock.png" alt=""> 
 				  <br>
                     <a href="#" class="btn btn-danger" onclick="eliminar('<?php echo $row['id_producto'];?>')" title="Eliminar"> <i class="glyphicon glyphicon-trash"></i> Eliminar </a> 
-					<a href="#myModal2" data-toggle="modal" data-codigo='<?php echo $row['codigo_producto'];?>' data-nombre='<?php echo $row['nombre_producto'];?>' data-categoria='<?php echo $row['id_categoria']?>' data-precio='<?php echo $row['precio_producto']?>' data-stock='<?php echo $row['stock'];?>' data-id='<?php echo $row['id_producto'];?>' class="btn btn-info" title="Editar"> <i class="glyphicon glyphicon-pencil"></i> Editar </a>	
+					<a href="#myModal2" data-toggle="modal" data-codigo='<?php echo $row['codigo_producto'];?>' data-nombre='<?php echo $row['nombre_producto'];?>' data-categoria='<?php echo $row['id_categoria']?>' data-precio='<?php echo $row['precio_producto_cons_final']?>' data-precio2='<?php echo $row['precio_producto_reventa']?>' data-stock='<?php echo $row['stock'];?>' data-id='<?php echo $row['id_producto'];?>' class="btn btn-info" title="Editar"> <i class="glyphicon glyphicon-pencil"></i> Editar </a>	
 					
               </div>
 			  
@@ -106,10 +106,16 @@
                       <span class="item-quantity"><?php echo number_format($row['stock']);?></span>
                     </div>
 					<div class="col-sm-12">
-                      <span class="current-stock"> Precio venta  </span>
+                      <span class="current-stock"> Precio venta consumidor final </span>
                     </div>
 					<div class="col-sm-12">
-                      <span class="item-price">$ <?php echo number_format($row['precio_producto'],2);?></span>
+                      <span class="item-price">$ <?php echo number_format($row['precio_producto_cons_final'],2);?></span>
+                    </div>
+					<div class="col-sm-12">
+                      <span class="current-stock"> Precio venta reventa </span>
+                    </div>
+					<div class="col-sm-12">
+                      <span class="item-price">$ <?php echo number_format($row['precio_producto_reventa'],2);?></span>
                     </div>
 					
                     <div class="col-sm-12 margin-btm-10">
@@ -228,6 +234,7 @@ $( "#editar_producto" ).submit(function( event ) {
 		var nombre = button.data('nombre')
 		var categoria = button.data('categoria')
 		var precio = button.data('precio')
+		var precio2 = button.data('precio2')
 		var stock = button.data('stock')
 		var id = button.data('id')
 		var modal = $(this)
@@ -235,6 +242,7 @@ $( "#editar_producto" ).submit(function( event ) {
 		modal.find('.modal-body #mod_nombre').val(nombre)
 		modal.find('.modal-body #mod_categoria').val(categoria)
 		modal.find('.modal-body #mod_precio').val(precio)
+		modal.find('.modal-body #mod_precio_2').val(precio2)
 		modal.find('.modal-body #mod_stock').val(stock)
 		modal.find('.modal-body #mod_id').val(id)
 	})
