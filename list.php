@@ -46,7 +46,7 @@ $title = "Inventario | Simple Stock";
 		$(document).ready(function() {
 			$('#miTabla').DataTable({
 				language: {
-					url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+					url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
 				}
 			});
 		});
@@ -77,33 +77,30 @@ $title = "Inventario | Simple Stock";
 					INNER JOIN categorias ON products.id_categoria = categorias.id_categoria;
 					");
 				while ($row = mysqli_fetch_array($query)) {
-					
-					if ($row['stock'] == 0) {
-						$stockDisplay = '<span style="color: red;"><b>Sin stock</b></span>';
-					} else {
-						$stockDisplay = $row['stock'];
-					}
 
-					echo "<tr>
+				if ($row['stock'] == 0) {
+					$stockDisplay = '<span style="color: red;"><b>Sin stock</b></span>';
+				} else {
+					$stockDisplay = $row['stock'];
+				}
+
+				$precioConsFinal = number_format($row['precio_producto_cons_final'], 2);
+				$precioReventa   = number_format($row['precio_producto_reventa'], 2);
+
+				echo "<tr>
 					<td>{$row['codigo_producto']}</td>
 					<td>{$row['nombre_producto']}</td>
-					<td>$ {$row['precio_producto_cons_final']}</td>
-					<td>$ {$row['precio_producto_reventa']}</td>
+					<td>$ {$precioConsFinal}</td>
+					<td>$ {$precioReventa}</td>
 					<td>{$stockDisplay}</td>
 					<td>{$row['nombre_categoria']}</td>
 				</tr>";
-				}
-				?>
+			}
+			?>
 			</tbody>
 		</table>
 	</div>
-	<div class="navbar navbar-default navbar-fixed-bottom">
-		<div class="container">
-			<p class="navbar-text pull-left">&copy <?php echo date('Y'); ?> - Gastón Barbaccia.
-				<a href="#" target="_blank" style="color: #ecf0f1">DEVCODE</a>
-			</p>
-		</div>
-	</div>
+
 </body>
 
 </html>
