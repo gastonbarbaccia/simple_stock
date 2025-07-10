@@ -25,13 +25,13 @@ if (isset($_POST['reference']) and isset($_POST['quantity'])) {
 	$nota = "$firstname agregó $quantity producto(s) al inventario";
 	date_default_timezone_set('America/Argentina/Buenos_Aires');
 	$fecha = date("Y-m-d H:i:s");
-	$tipo_precio = $_POST['reference_remove_2'];
+	$tipo_precio = '';
 	guardar_historial($id_producto, $user_id, $fecha, $nota, $reference, $tipo_precio, $quantity);
 	$update = agregar_stock($id_producto, $quantity);
 	if ($update == 1) {
-		$message = 1;
+		$_SESSION['message'] = 'success';
 	} else {
-		$error = 1;
+		$_SESSION['message'] = 'error';
 	}
 }
 
@@ -47,11 +47,16 @@ if (isset($_POST['reference_remove']) and isset($_POST['quantity_remove'])) {
 	$tipo_precio = $_POST['reference_remove_2'];
 	guardar_historial($id_producto, $user_id, $fecha, $nota, $reference, $tipo_precio, $quantity);
 	$update = eliminar_stock($id_producto, $quantity);
+	
 	if ($update == 1) {
-		$message = 1;
+		$_SESSION['message'] = 'success';
 	} else {
-		$error = 1;
+		$_SESSION['message'] = 'error';
 	}
+
+	// Redirigir para evitar reenvío del formulario
+	header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id_producto);
+	exit;
 }
 
 if (isset($_GET['id'])) {
@@ -90,7 +95,7 @@ if (isset($_GET['id'])) {
 								<img class="item-img img-responsive" src="img/stock.png" alt="">
 								<br>
 								<a href="#" class="btn btn-danger" onclick="eliminar('<?php echo $row['id_producto']; ?>')" title="Eliminar"> <i class="glyphicon glyphicon-trash"></i> Eliminar </a>
-								<a href="#myModal2" data-toggle="modal" data-codigo='<?php echo $row['codigo_producto']; ?>' data-nombre='<?php echo $row['nombre_producto']; ?>' data-categoria='<?php echo $row['id_categoria'] ?>' data-precio='<?php echo $row['precio_producto_cons_final'] ?>' data-precio2='<?php echo $row['precio_producto_reventa'] ?>' data-stock='<?php echo $row['stock']; ?>' data-id='<?php echo $row['id_producto']; ?>' class="btn btn-info" title="Editar"> <i class="glyphicon glyphicon-pencil"></i> Editar </a>
+								<a href="#myModal2" data-toggle="modal" data-codigo='<?php echo $row['codigo_producto']; ?>' data-nombre='<?php echo $row['nombre_producto']; ?>' data-categoria='<?php echo $row['id_categoria'] ?>' data-precio='<?php echo number_format($row['precio_producto_cons_final'], 2, '.', ''); ?>' data-precio2='<?php echo number_format($row['precio_producto_reventa'], 2, '.', ''); ?>' data-stock='<?php echo $row['stock']; ?>' data-id='<?php echo $row['id_producto']; ?>' class="btn btn-info" title="Editar"> <i class="glyphicon glyphicon-pencil"></i> Editar </a>
 
 							</div>
 
@@ -182,7 +187,7 @@ if (isset($_GET['id'])) {
 												<td><?php echo date('H:i:s', strtotime($row['fecha'])); ?></td>
 												<td><?php echo $row['nota']; ?></td>
 												<td><?php echo $row['referencia']; ?></td>
-												<td>$ <?php echo $row['tipo_precio']; ?></td>
+												<td><?php echo ($row['tipo_precio'] === '') ? '-' : '$ ' . $row['tipo_precio']; ?></td>
 												<td class='text-center'><?php echo number_format($row['cantidad']); ?></td>
 											</tr>
 										<?php
@@ -226,12 +231,8 @@ if (isset($_GET['id'])) {
 			success: function(datos) {
 				$("#resultados_ajax2").html(datos);
 				$('#actualizar_datos').attr("disabled", false);
-				window.setTimeout(function() {
-					$(".alert").fadeTo(500, 0).slideUp(500, function() {
-						$(this).remove();
-					});
-					location.replace('stock.php');
-				}, 4000);
+
+				location.replace('producto.php?id=' + $('#mod_id').val());
 			}
 		});
 		event.preventDefault();
