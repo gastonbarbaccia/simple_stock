@@ -120,7 +120,7 @@ $title = "Inventario | Simple Stock";
 					{
 						"data": "stock",
 						"render": function(data) {
-							return (parseInt(data) === 0) ?
+							return (parseInt(data) <= 0) ?
 								'<span style="color: red;"><b>Sin stock</b></span>' :
 								data;
 						}
