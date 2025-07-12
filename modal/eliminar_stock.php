@@ -31,7 +31,7 @@
             <label for="reference_remove_2" class="col-sm-2 control-label">Precio</label>
             <div class="col-sm-6">
               <select name="reference_remove_2" class="form-control" id="reference_remove_2" required>
-                <option value="">Seleccione un motivo</option>
+                <option value="">Seleccione un tipo de precio</option>
                 <option value="<?php echo number_format($row['precio_producto_cons_final'], 2); ?>">Precio consumidor final $ <?php echo number_format($row['precio_producto_cons_final'], 2); ?></option>
                 <option value="<?php echo number_format($row['precio_producto_reventa'], 2); ?>">Precio reventa $ <?php echo number_format($row['precio_producto_reventa'], 2); ?></option>
               </select>
