@@ -47,7 +47,7 @@ if (isset($_POST['reference_remove']) and isset($_POST['quantity_remove'])) {
 	$tipo_precio = $_POST['reference_remove_2'];
 	guardar_historial($id_producto, $user_id, $fecha, $nota, $reference, $tipo_precio, $quantity);
 	$update = eliminar_stock($id_producto, $quantity);
-	
+
 	if ($update == 1) {
 		$_SESSION['message'] = 'success';
 	} else {
@@ -187,7 +187,7 @@ if (isset($_GET['id'])) {
 												<td><?php echo date('H:i:s', strtotime($row['fecha'])); ?></td>
 												<td><?php echo $row['nota']; ?></td>
 												<td><?php echo $row['referencia']; ?></td>
-												<td><?php echo ($row['tipo_precio'] === '') ? '-' : '$ ' . $row['tipo_precio']; ?></td>
+												<td><?php echo ($row['tipo_precio'] === '') ? '-' : $row['tipo_precio']; ?></td>
 												<td class='text-center'><?php echo number_format($row['cantidad']); ?></td>
 											</tr>
 										<?php
@@ -263,4 +263,40 @@ if (isset($_GET['id'])) {
 			location.replace('stock.php?delete=' + id);
 		}
 	}
+</script>
+
+<script>
+	$(document).ready(function() {
+		function syncPrecio() {
+			let motivo = $('#reference_remove').val();
+			if (motivo === 'Otros') {
+				$('#reference_remove_2').val($('#reference_remove_2_input').val());
+			} else {
+				$('#reference_remove_2').val($('#reference_remove_2_select').val());
+			}
+		}
+
+		$('#reference_remove').on('change', function() {
+			if ($(this).val() === 'Otros') {
+				$('#reference_remove_2_select').hide();
+				$('#reference_remove_2_input').show().prop('required', true);
+				$('#label_precio').hide();
+				$('#label_motivo_adicional').show();
+			} else {
+				$('#reference_remove_2_input').hide().val('').prop('required', false);
+				$('#reference_remove_2_select').show();
+				$('#label_precio').show();
+				$('#label_motivo_adicional').hide();
+			}
+			syncPrecio();
+		});
+
+		$('#reference_remove_2_select, #reference_remove_2_input').on('input change', function() {
+			syncPrecio();
+		});
+
+		$('form').on('submit', function() {
+			syncPrecio();
+		});
+	});
 </script>

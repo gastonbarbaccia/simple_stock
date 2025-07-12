@@ -23,18 +23,33 @@
               <select name="reference_remove" class="form-control" id="reference_remove" required>
                 <option value="">Seleccione un motivo</option>
                 <option value="Eliminicación por venta">Por venta</option>
-                <option value="Eliminación por otros motivos">Otros motivos</option>
+                <option value="Otros">Otros motivos</option>
               </select>
             </div>
           </div>
-          <div class="form-group">
-            <label for="reference_remove_2" class="col-sm-2 control-label">Precio</label>
+          <div class="form-group" id="precio_group">
+            <!-- Label original -->
+            <label id="label_precio" for="reference_remove_2_visible" class="col-sm-2 control-label">Precio</label>
+            <!-- Label alternativo para mostrar si elige "otros" -->
+            <label id="label_motivo_adicional" class="col-sm-2 control-label" style="display: none;padding-top:15px">Detalle</label>
+
             <div class="col-sm-6">
-              <select name="reference_remove_2" class="form-control" id="reference_remove_2" required>
+              <!-- Select visible por defecto -->
+              <select class="form-control" id="reference_remove_2_select">
                 <option value="">Seleccione un tipo de precio</option>
-                <option value="<?php echo number_format($row['precio_producto_cons_final'], 2); ?>">Precio consumidor final $ <?php echo number_format($row['precio_producto_cons_final'], 2); ?></option>
-                <option value="<?php echo number_format($row['precio_producto_reventa'], 2); ?>">Precio reventa $ <?php echo number_format($row['precio_producto_reventa'], 2); ?></option>
+                <option value="<?php echo number_format($row['precio_producto_cons_final'], 2); ?>">
+                  Precio consumidor final $ <?php echo number_format($row['precio_producto_cons_final'], 2); ?>
+                </option>
+                <option value="<?php echo number_format($row['precio_producto_reventa'], 2); ?>">
+                  Precio reventa $ <?php echo number_format($row['precio_producto_reventa'], 2); ?>
+                </option>
               </select>
+
+              <!-- Input de precio/motivo personalizado -->
+              <input type="text" class="form-control" id="reference_remove_2_input" style="display:none; margin-top:10px;" placeholder="Detalle el motivo..." />
+
+              <!-- Campo oculto que se envía -->
+              <input type="hidden" name="reference_remove_2" id="reference_remove_2" required />
             </div>
           </div>
         </div>
