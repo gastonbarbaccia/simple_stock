@@ -37,10 +37,10 @@
               <!-- Select visible por defecto -->
               <select class="form-control" id="reference_remove_2_select">
                 <option value="">Seleccione un tipo de precio</option>
-                <option value="<?php echo number_format($row['precio_producto_cons_final'], 2); ?>">
+                <option value="Precio consumidor final $ <?php echo number_format($row['precio_producto_cons_final'], 2); ?>">
                   Precio consumidor final $ <?php echo number_format($row['precio_producto_cons_final'], 2); ?>
                 </option>
-                <option value="<?php echo number_format($row['precio_producto_reventa'], 2); ?>">
+                <option value="Precio reventa $ <?php echo number_format($row['precio_producto_reventa'], 2); ?>">
                   Precio reventa $ <?php echo number_format($row['precio_producto_reventa'], 2); ?>
                 </option>
               </select>

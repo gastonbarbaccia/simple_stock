@@ -146,7 +146,7 @@ if (isset($_GET['id'])) {
 						<br>
 						<div class="row">
 
-							<div class="col-sm-8 col-sm-offset-2 text-left">
+							<div class="col-sm-12  text-left" style="padding-left: 25px;padding-right:25px;">
 								<div class="row">
 									<?php
 									if (isset($message)) {
@@ -179,7 +179,7 @@ if (isset($_GET['id'])) {
 											<td class='text-center'>Total</td>
 										</tr>
 										<?php
-										$query = mysqli_query($con, "select * from historial where id_producto='$id_producto'");
+										$query = mysqli_query($con, "select * from historial where id_producto='$id_producto' order by fecha desc LIMIT 10");
 										while ($row = mysqli_fetch_array($query)) {
 										?>
 											<tr>

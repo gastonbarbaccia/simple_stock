@@ -22,7 +22,7 @@ $login = new Login();
 if ($login->isUserLoggedIn() == true) {
 	// the user is logged in. you can do whatever you want here.
 	// for demonstration purposes, we simply show the "you are logged in" view.
-	header("location: list.php");
+	header("location: dashboard.php");
 } else {
 	// the user is not logged in. you can do whatever you want here.
 	// for demonstration purposes, we simply show the "you are not logged in" view.
