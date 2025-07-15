@@ -1,0 +1,18 @@
+codigo_producto,nombre_producto,precio_producto,stock,nombre_categoria,descripcion_categoria
+P004,Monitor HD,149.99,15,Electrónica,Dispositivos electrónicos
+P005,Libro Python,29.99,100,Libros,Libros educativos y de programación
+P006,Libro SQL,24.99,80,Libros,Libros educativos y de programación
+P007,Libro Java,34.99,90,Libros,Libros educativos y de programación
+P008,Libro HTML & CSS,19.99,120,Libros,Libros educativos y de programación
+P009,Camiseta Negra,9.99,200,Ropa,Indumentaria para adultos
+P010,Camiseta Blanca,9.99,180,Ropa,Indumentaria para adultos
+P011,Jeans Azul,39.99,75,Ropa,Indumentaria para adultos
+P012,Zapatillas Running,59.99,60,Ropa,Indumentaria para adultos
+P013,Smartwatch Y1,129.99,25,Electrónica,Dispositivos electrónicos
+P014,Audífonos BT,49.99,40,Electrónica,Dispositivos electrónicos
+P015,Libro Ciberseguridad,44.99,70,Libros,Libros educativos y de programación
+P016,Libro Docker,31.50,65,Libros,Libros educativos y de programación
+P017,Remera Roja,11.99,150,Ropa,Indumentaria para adultos
+P018,Buzo con Capucha,29.99,55,Ropa,Indumentaria para adultos
+P019,Libro Laravel,39.00,85,Libros,Libros educativos y de programación
+P020,Parlante Bluetooth,89.99,45,Electrónica,Dispositivos electrónicos

@@ -17,6 +17,9 @@
 	      <!-- Collect the nav links, forms, and other content for toggling -->
 	      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	        <ul class="nav navbar-nav">
+            <li class="<?php if (isset($active_listado)) {
+                          echo $active_listado;
+                        } ?>"><a href="list.php"><i class='glyphicon glyphicon-list'></i> Listado</a></li>
 	          <li class="<?php if (isset($active_productos)) {
                           echo $active_productos;
                         } ?>"><a href="stock.php"><i class='glyphicon glyphicon-barcode'></i> Inventario</a></li>

@@ -1,36 +1,40 @@
 <?php
 include('is_logged.php'); 
 
+$errors = [];
+$messages = [];
 
 if (empty($_POST['codigo'])) {
     $errors[] = "Código vacío";
-} else if (empty($_POST['nombre'])) {
+} elseif (empty($_POST['nombre'])) {
     $errors[] = "Nombre del producto vacío";
-} else if ($_POST['stock'] == "") {
+} elseif ($_POST['stock'] == "") {
     $errors[] = "Stock del producto vacío";
-} else if (empty($_POST['precio'])) {
+} elseif (empty($_POST['precio'])) {
     $errors[] = "Precio de venta vacío";
-} else if (
+} elseif (empty($_POST['precio2'])) {
+    $errors[] = "Precio de reventa vacío";
+} elseif (
     !empty($_POST['codigo']) &&
     !empty($_POST['nombre']) &&
     $_POST['stock'] !== "" &&
-    !empty($_POST['precio'])
+    !empty($_POST['precio']) &&
+    !empty($_POST['precio2'])
 ) {
-   
     require_once("../config/db.php");
     require_once("../config/conexion.php");
     include("../funciones.php");
 
-    
-    $codigo = mysqli_real_escape_string($con, (strip_tags($_POST["codigo"], ENT_QUOTES)));
-    $nombre = mysqli_real_escape_string($con, (strip_tags($_POST["nombre"], ENT_QUOTES)));
+    $codigo = mysqli_real_escape_string($con, strip_tags($_POST["codigo"], ENT_QUOTES));
+    $nombre = mysqli_real_escape_string($con, strip_tags($_POST["nombre"], ENT_QUOTES));
     $stock = intval($_POST['stock']);
     $id_categoria = intval($_POST['categoria']);
     $precio_venta = floatval($_POST['precio']);
+    $precio_venta2 = floatval($_POST['precio2']);
+    date_default_timezone_set('America/Argentina/Buenos_Aires');
     $date_added = date("Y-m-d H:i:s");
 
-   
-    $imagen_db = "img/stock.png"; // Imagen por defecto si no se sube ninguna
+    $imagen_db = "img/stock.png"; // Imagen por defecto
 
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
         $allowed = ['jpg', 'jpeg', 'png', 'gif'];
@@ -51,10 +55,9 @@ if (empty($_POST['codigo'])) {
         }
     }
 
-    if (!isset($errors)) {
-        
-        $sql = "INSERT INTO products (codigo_producto, nombre_producto, date_added, precio_producto_cons_final, stock, id_categoria, imagen)
-                VALUES ('$codigo', '$nombre', '$date_added', '$precio_venta', '$stock', '$id_categoria', '$imagen_db')";
+    if (empty($errors)) {
+        $sql = "INSERT INTO products (codigo_producto, nombre_producto, date_added, precio_producto_cons_final, precio_producto_reventa, stock, id_categoria, imagen)
+                VALUES ('$codigo', '$nombre', '$date_added', '$precio_venta', '$precio_venta2', '$stock', '$id_categoria', '$imagen_db')";
         $query_new_insert = mysqli_query($con, $sql);
 
         if ($query_new_insert) {
@@ -63,7 +66,10 @@ if (empty($_POST['codigo'])) {
             $user_id = $_SESSION['user_id'];
             $firstname = $_SESSION['firstname'];
             $nota = "$firstname agregó $stock producto(s) al inventario";
-            echo guardar_historial($id_producto, $user_id, $date_added, $nota, $codigo, $stock);
+            $tipo_precio = floatval($precio_venta);  
+
+            echo guardar_historial($id_producto, $user_id, $date_added, $nota, $codigo, $tipo_precio, $stock);
+
         } else {
             $errors[] = "Lo siento, algo ha salido mal. Intenta nuevamente." . mysqli_error($con);
         }
@@ -72,12 +78,12 @@ if (empty($_POST['codigo'])) {
     $errors[] = "Error desconocido.";
 }
 
-
-if (isset($errors)) {
+// Mensajes
+if (!empty($errors)) {
     ?>
     <div class="alert alert-danger" role="alert">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Error!</strong>
+        <strong>Error!</strong><br>
         <?php
         foreach ($errors as $error) {
             echo $error . "<br>";
@@ -86,11 +92,12 @@ if (isset($errors)) {
     </div>
     <?php
 }
-if (isset($messages)) {
+
+if (!empty($messages)) {
     ?>
     <div class="alert alert-success" role="alert">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>¡Bien hecho!</strong>
+        <strong>¡Bien hecho!</strong><br>
         <?php
         foreach ($messages as $message) {
             echo $message . "<br>";
