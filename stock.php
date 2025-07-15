@@ -27,8 +27,23 @@
 	<div class="panel panel-success">
 		<div class="panel-heading">
 		    <div class="btn-group pull-right">
-				<button type='button' class="btn btn-success" data-toggle="modal" data-target="#nuevoProducto"><span class="glyphicon glyphicon-plus" ></span> Agregar</button>
+				<button type='button' class="btn btn-success"  data-toggle="modal" data-target="#nuevoProducto">
+					<span class="glyphicon glyphicon-plus"></span> Agregar
+				</button>
+				
+				
+				<div class="btn-group ml-2">
+					<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Descargar
+					</button>
+					<div class="dropdown-menu">
+					<a class="dropdown-item" href="ajax/exportar_productos.php">📄 CSV</a>
+					<br>
+					<a class="dropdown-item" href="ajax/exportar_productos_excel.php">📊 Excel</a>
+					</div>
+				</div>
 			</div>
+
 			<h4><i class='glyphicon glyphicon-search'></i> Consultar inventario</h4>
 		</div>
 		<div class="panel-body">
@@ -40,8 +55,7 @@
 			include("modal/editar_productos.php");
 			?>
 			<form class="form-horizontal" role="form" id="datos">
-				
-						
+
 				<div class="row">
 					<div class='col-md-4'>
 						<label>Filtrar por código o nombre</label>
@@ -68,10 +82,10 @@
 				</div>
 				<hr>
 				<div class='row-fluid'>
-					<div id="resultados"></div><!-- Carga los datos ajax -->
+					<div id="resultados"></div><
 				</div>	
 				<div class='row'>
-					<div class='outer_div'></div><!-- Carga los datos ajax -->
+					<div class='outer_div'></div><
 				</div>
 			</form>
 				
@@ -122,24 +136,39 @@ function eliminar (id){
 		?>	
 	});
 		
-$( "#guardar_producto" ).submit(function( event ) {
-  $('#guardar_datos').attr("disabled", true);
-  
- var parametros = $(this).serialize();
-	 $.ajax({
-			type: "POST",
-			url: "ajax/nuevo_producto.php",
-			data: parametros,
-			 beforeSend: function(objeto){
-				$("#resultados_ajax_productos").html("Mensaje: Cargando...");
-			  },
-			success: function(datos){
-			$("#resultados_ajax_productos").html(datos);
-			$('#guardar_datos').attr("disabled", false);
-			load(1);
-		  }
-	});
-  event.preventDefault();
-})
+$(document).ready(function () {
+  $("#guardar_producto").submit(function (event) {
+    event.preventDefault(); 
+    $('#guardar_datos').attr("disabled", true);
+
+    var form = $('#guardar_producto')[0];
+    var formData = new FormData(form); 
+
+    $.ajax({
+      type: "POST",
+      url: "ajax/nuevo_producto.php", 
+      data: formData,
+      processData: false,
+      contentType: false,
+      beforeSend: function () {
+        $("#resultados_ajax_productos").html("Cargando...");
+      },
+      success: function (datos) {
+        $("#resultados_ajax_productos").html(datos);
+        $('#guardar_datos').attr("disabled", false);
+        $('#nuevoProducto').modal('hide'); 
+        $('#guardar_producto')[0].reset(); 
+        load(1); 
+      },
+      error: function () {
+        $("#resultados_ajax_productos").html("Error al enviar el formulario.");
+        $('#guardar_datos').attr("disabled", false);
+      }
+    });
+  });
+});
+
+
+
 
 </script>
