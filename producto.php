@@ -168,7 +168,7 @@ if (isset($_GET['id'])) {
 									?>
 									<table class='table table-bordered'>
 										<tr>
-											<th class='text-center' colspan=5>HISTORIAL DE INVENTARIO</th>
+											<th class='text-center' colspan=6>HISTORIAL DE INVENTARIO</th>
 										</tr>
 										<tr>
 											<td>Fecha</td>
@@ -269,18 +269,28 @@ if (isset($_GET['id'])) {
 	$(document).ready(function() {
 		function syncPrecio() {
 			let motivo = $('#reference_remove').val();
-			if (motivo === 'Otros') {
-				$('#reference_remove_2').val($('#reference_remove_2_input').val());
+			if (motivo === 'Otros motivos') {
+				let select = $('#reference_remove_2_select option:selected');
+				let tipo = select.data('type'); // "consumidor final" o "reventa"
+				let valor = select.val(); // ejemplo: "31,049.00"
+				let resultado = tipo + " $ " + valor;
+				$('#reference_remove_2').val(resultado);
 			} else {
-				$('#reference_remove_2').val($('#reference_remove_2_select').val());
+
+				let select = $('#reference_remove_2_select option:selected');
+				let tipo = select.data('type'); // "consumidor final" o "reventa"
+				let valor = select.val(); // ejemplo: "31,049.00"
+				let resultado = tipo + " $ " + valor;
+				$('#reference_remove_2').val(resultado);
+
 			}
 		}
 
 		$('#reference_remove').on('change', function() {
-			if ($(this).val() === 'Otros') {
-				$('#reference_remove_2_select').hide();
+			if ($(this).val() === 'Otros motivos') {
+				//$('#reference_remove_2_select').hide();
 				$('#reference_remove_2_input').show().prop('required', true);
-				$('#label_precio').hide();
+				//$('#label_precio').hide();
 				$('#label_motivo_adicional').show();
 			} else {
 				$('#reference_remove_2_input').hide().val('').prop('required', false);
@@ -301,19 +311,19 @@ if (isset($_GET['id'])) {
 	});
 </script>
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const quantityInput = document.getElementById('quantity_remove');
-    const maxStock = <?php echo $row['stock']; ?>;
+	document.addEventListener('DOMContentLoaded', function() {
+		const quantityInput = document.getElementById('quantity_remove');
+		const maxStock = <?php echo $row['stock']; ?>;
 
-    // Establece el valor máximo directamente en el input
-    quantityInput.setAttribute('max', maxStock);
+		// Establece el valor máximo directamente en el input
+		quantityInput.setAttribute('max', maxStock);
 
-    // Verifica si el valor ingresado es válido
-    quantityInput.addEventListener('input', function () {
-      if (parseInt(this.value) > maxStock) {
-        alert('No podés eliminar más stock del disponible.');
-        this.value = maxStock;
-      }
-    });
-  });
+		// Verifica si el valor ingresado es válido
+		quantityInput.addEventListener('input', function() {
+			if (parseInt(this.value) > maxStock) {
+				alert('No podés eliminar más stock del disponible.');
+				this.value = maxStock;
+			}
+		});
+	});
 </script>

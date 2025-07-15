@@ -30,26 +30,31 @@
           <div class="form-group" id="precio_group">
             <!-- Label original -->
             <label id="label_precio" for="reference_remove_2_visible" class="col-sm-2 control-label">Precio</label>
-            <!-- Label alternativo para mostrar si elige "otros" -->
-            <label id="label_motivo_adicional" class="col-sm-2 control-label" style="display: none;padding-top:15px">Detalle</label>
 
             <div class="col-sm-6">
               <!-- Select visible por defecto -->
-              <select class="form-control" id="reference_remove_2_select">
+              <select class="form-control" id="reference_remove_2_select" required>
                 <option value="">Seleccione un tipo de precio</option>
-                <option value="Precio consumidor final $ <?php echo number_format($row['precio_producto_cons_final'], 2); ?>">
+                <option
+                  value="<?php echo number_format($row['precio_producto_cons_final'], 2); ?>"
+                  data-type="Precio consumidor final">
                   Precio consumidor final $ <?php echo number_format($row['precio_producto_cons_final'], 2); ?>
                 </option>
-                <option value="Precio reventa $ <?php echo number_format($row['precio_producto_reventa'], 2); ?>">
+                <option
+                  value="<?php echo number_format($row['precio_producto_reventa'], 2); ?>"
+                  data-type="Precio reventa">
                   Precio reventa $ <?php echo number_format($row['precio_producto_reventa'], 2); ?>
                 </option>
               </select>
 
-              <!-- Input de precio/motivo personalizado -->
-              <input type="text" class="form-control" id="reference_remove_2_input" style="display:none; margin-top:10px;" placeholder="Detalle el motivo..." />
-
               <!-- Campo oculto que se envía -->
               <input type="hidden" name="reference_remove_2" id="reference_remove_2" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="reference_remove" class="col-sm-2 control-label" id="label_motivo_adicional" style="display:none;">Detalle</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="reference_remove_2_input" style="display:none;" placeholder="Detalle el motivo..." />
             </div>
           </div>
         </div>
