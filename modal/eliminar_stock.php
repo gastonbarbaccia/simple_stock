@@ -14,7 +14,7 @@
           <div class="form-group">
             <label for="quantity" class="col-sm-2 control-label">Cantidad</label>
             <div class="col-sm-6">
-              <input type="number" min="1" name="quantity_remove" class="form-control" id="quantity_remove" value="" placeholder="Cantidad" required="">
+              <input type="number" min="1" max="<?php echo $row['stock']; ?>" name="quantity_remove" class="form-control" id="quantity_remove" value="" placeholder="Cantidad" required="">
             </div>
           </div>
           <div class="form-group">
@@ -23,7 +23,7 @@
               <select name="reference_remove" class="form-control" id="reference_remove" required>
                 <option value="">Seleccione un motivo</option>
                 <option value="Eliminicación por venta">Por venta</option>
-                <option value="Otros">Otros motivos</option>
+                <option value="Otros motivos">Otros motivos</option>
               </select>
             </div>
           </div>

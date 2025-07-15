@@ -300,3 +300,20 @@ if (isset($_GET['id'])) {
 		});
 	});
 </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const quantityInput = document.getElementById('quantity_remove');
+    const maxStock = <?php echo $row['stock']; ?>;
+
+    // Establece el valor máximo directamente en el input
+    quantityInput.setAttribute('max', maxStock);
+
+    // Verifica si el valor ingresado es válido
+    quantityInput.addEventListener('input', function () {
+      if (parseInt(this.value) > maxStock) {
+        alert('No podés eliminar más stock del disponible.');
+        this.value = maxStock;
+      }
+    });
+  });
+</script>
