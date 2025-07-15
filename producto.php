@@ -33,6 +33,8 @@ if (isset($_POST['reference']) and isset($_POST['quantity'])) {
 	} else {
 		$_SESSION['message'] = 'error';
 	}
+
+	header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id_producto);
 }
 
 if (isset($_POST['reference_remove']) and isset($_POST['quantity_remove'])) {
@@ -113,7 +115,7 @@ if (isset($_GET['id'])) {
 										<span class="current-stock">Stock disponible</span>
 									</div>
 									<div class="col-sm-12 margin-btm-10">
-										<span class="item-quantity"><?php echo number_format($row['stock']); ?></span>
+										<span class="item-quantity" id="stock_disponible"><?php echo number_format($row['stock']); ?></span>
 									</div>
 									<div class="col-sm-12">
 										<span class="current-stock"> Precio consumidor final </span>
@@ -311,19 +313,30 @@ if (isset($_GET['id'])) {
 	});
 </script>
 <script>
-	document.addEventListener('DOMContentLoaded', function() {
-		const quantityInput = document.getElementById('quantity_remove');
-		const maxStock = <?php echo $row['stock']; ?>;
+  document.addEventListener('DOMContentLoaded', function () {
+    const quantityInput = document.getElementById('quantity_remove');
+    const stockSpan = document.getElementById('stock_disponible');
 
-		// Establece el valor máximo directamente en el input
-		quantityInput.setAttribute('max', maxStock);
+    function obtenerStockDisponible() {
+      // Quita puntos de miles y convierte coma decimal a punto
+      const raw = stockSpan.textContent.replace(/\./g, '').replace(',', '.');
+      return parseFloat(raw);
+    }
 
-		// Verifica si el valor ingresado es válido
-		quantityInput.addEventListener('input', function() {
-			if (parseInt(this.value) > maxStock) {
-				alert('No podés eliminar más stock del disponible.');
-				this.value = maxStock;
-			}
-		});
-	});
+    quantityInput.addEventListener('input', function () {
+      const cantidad = parseFloat(this.value);
+      const stockDisponible = obtenerStockDisponible();
+
+      if (cantidad <= 0 || isNaN(cantidad)) {
+        alert('La cantidad debe ser un número positivo.');
+        this.value = '';
+        return;
+      }
+
+      if (cantidad > stockDisponible) {
+        alert('La cantidad solicitada es mayor al stock disponible (' + stockDisponible + ').');
+        this.value = '';
+      }
+    });
+  });
 </script>
