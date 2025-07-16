@@ -17,9 +17,14 @@ $data = [];
 
 while ($row = mysqli_fetch_assoc($query)) {
     $row['precio_producto_cons_final'] = number_format($row['precio_producto_cons_final'], 2);
-	$row['precio_producto_reventa']    = number_format($row['precio_producto_reventa'], 2);
-	$data[] = $row;
+    $row['precio_producto_reventa']    = number_format($row['precio_producto_reventa'], 2);
+
+    $row['imagen_producto'] = isset($row['imagen_producto']) ? trim($row['imagen_producto']) : '';
+
+    $data[] = $row;
 }
 
+
 header('Content-Type: application/json');
+
 echo json_encode($data);

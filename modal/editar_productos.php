@@ -2,7 +2,7 @@
 		if (isset($con))
 		{
 	?>
-	<!-- Modal -->
+	
 	<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	  <div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -11,7 +11,8 @@
 			<h4 class="modal-title" id="myModalLabel"><i class='glyphicon glyphicon-edit'></i> Editar producto</h4>
 		  </div>
 		  <div class="modal-body">
-			<form class="form-horizontal" method="post" id="editar_producto" name="editar_producto">
+			<form class="form-horizontal" method="post" id="editar_producto" name="editar_producto" enctype="multipart/form-data">
+
 			<div id="resultados_ajax2"></div>
 			  <div class="form-group">
 				<label for="mod_codigo" class="col-sm-3 control-label">Código</label>
@@ -25,6 +26,14 @@
 				<div class="col-sm-8">
 				  <textarea class="form-control" id="mod_nombre" name="mod_nombre" placeholder="Nombre del producto" required></textarea>
 				</div>
+			  </div>
+
+			  <div class="form-group">
+					<label for="mod_imagen" class="col-sm-3 control-label">Imagen</label>
+					<div class="col-sm-8">
+						<input type="file" name="mod_imagen" id="mod_imagen" accept="image/*" />
+						<input type="hidden" name="imagen_actual" id="imagen_actual" value="<?php echo htmlspecialchars($row['imagen']); ?>">
+					</div>
 			  </div>
 			  
 			  <div class="form-group">
@@ -65,6 +74,7 @@
 				</div>
 			</div>
 			 
+
 			
 		  </div>
 		  <div class="modal-footer">

@@ -1,14 +1,12 @@
 <?php
-
 session_start();
-if (!isset($_SESSION['user_login_status']) and $_SESSION['user_login_status'] != 1) {
-	header("location: login.php");
-	exit;
+if (!isset($_SESSION['user_login_status']) || $_SESSION['user_login_status'] != 1) {
+    header("location: login.php");
+    exit;
 }
 
-/* Connect To Database*/
-require_once("config/db.php"); //Contiene las variables de configuracion para conectar a la base de datos
-require_once("config/conexion.php"); //Contiene funcion que conecta a la base de datos
+require_once("config/db.php");
+require_once("config/conexion.php");
 include("funciones.php");
 
 $active_productos = "active";
@@ -16,331 +14,226 @@ $active_clientes = "";
 $active_usuarios = "";
 $title = "Producto | Simple Stock";
 
-if (isset($_POST['reference']) and isset($_POST['quantity'])) {
-	$quantity = intval($_POST['quantity']);
-	$reference = mysqli_real_escape_string($con, (strip_tags($_POST["reference"], ENT_QUOTES)));
-	$id_producto = intval($_GET['id']);
-	$user_id = $_SESSION['user_id'];
-	$firstname = $_SESSION['firstname'];
-	$nota = "$firstname agregó $quantity producto(s) al inventario";
-	date_default_timezone_set('America/Argentina/Buenos_Aires');
-	$fecha = date("Y-m-d H:i:s");
-	$tipo_precio = '';
-	$detalle = '';
-	guardar_historial($id_producto, $user_id, $fecha, $nota, $reference,$detalle, $tipo_precio, $quantity);
-	$update = agregar_stock($id_producto, $quantity);
-	if ($update == 1) {
-		$_SESSION['message'] = 'success';
-	} else {
-		$_SESSION['message'] = 'error';
-	}
-
-	header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id_producto);
+if (isset($_POST['reference']) && isset($_POST['quantity'])) {
+    $quantity = intval($_POST['quantity']);
+    $reference = mysqli_real_escape_string($con, strip_tags($_POST["reference"], ENT_QUOTES));
+    $id_producto = intval($_GET['id']);
+    $user_id = $_SESSION['user_id'];
+    $firstname = $_SESSION['firstname'];
+    $nota = "$firstname agregó $quantity producto(s) al inventario";
+    date_default_timezone_set('America/Argentina/Buenos_Aires');
+    $fecha = date("Y-m-d H:i:s");
+    $tipo_precio = $_POST['reference_remove_2'] ?? '';
+    $detalle = $_POST['reference_remove_2_input'] ?? '';
+    guardar_historial($id_producto, $user_id, $fecha, $nota, $reference, $detalle, $tipo_precio, $quantity);
+    $update = agregar_stock($id_producto, $quantity);
+    $message = $update == 1 ? 1 : null;
+    $error = $update != 1 ? 1 : null;
 }
 
-if (isset($_POST['reference_remove']) and isset($_POST['quantity_remove'])) {
-	$quantity = intval($_POST['quantity_remove']);
-	$reference = mysqli_real_escape_string($con, (strip_tags($_POST["reference_remove"], ENT_QUOTES)));
-	$id_producto = intval($_GET['id']);
-	$user_id = $_SESSION['user_id'];
-	$firstname = $_SESSION['firstname'];
-	$nota = "$firstname eliminó $quantity producto(s) del inventario";
-	date_default_timezone_set('America/Argentina/Buenos_Aires');
-	$fecha = date("Y-m-d H:i:s");
-	$tipo_precio = $_POST['reference_remove_2'];
-	$detalle = $_POST['reference_remove_2_input'];
-	guardar_historial($id_producto, $user_id, $fecha, $nota, $reference, $detalle, $tipo_precio, $quantity);
-	$update = eliminar_stock($id_producto, $quantity);
-
-	if ($update == 1) {
-		$_SESSION['message'] = 'success';
-	} else {
-		$_SESSION['message'] = 'error';
-	}
-
-	// Redirigir para evitar reenvío del formulario
-	header("Location: " . $_SERVER['PHP_SELF'] . "?id=" . $id_producto);
-	exit;
+if (isset($_POST['reference_remove']) && isset($_POST['quantity_remove'])) {
+    $quantity = intval($_POST['quantity_remove']);
+    $reference = mysqli_real_escape_string($con, strip_tags($_POST["reference_remove"], ENT_QUOTES));
+    $id_producto = intval($_GET['id']);
+    $user_id = $_SESSION['user_id'];
+    $firstname = $_SESSION['firstname'];
+    $nota = "$firstname eliminó $quantity producto(s) del inventario";
+    date_default_timezone_set('America/Argentina/Buenos_Aires');
+    $fecha = date("Y-m-d H:i:s");
+    $tipo_precio = $_POST['reference_remove_2'];
+    $detalle = $_POST['reference_remove_2_input'];
+    guardar_historial($id_producto, $user_id, $fecha, $nota, $reference, $detalle, $tipo_precio, $quantity);
+    $update = eliminar_stock($id_producto, $quantity);
+    $message = $update == 1 ? 1 : null;
+    $error = $update != 1 ? 1 : null;
 }
 
 if (isset($_GET['id'])) {
-	$id_producto = intval($_GET['id']);
-	$query = mysqli_query($con, "select * from products where id_producto='$id_producto'");
-	$row = mysqli_fetch_array($query);
+    $id_producto = intval($_GET['id']);
+    $query = mysqli_query($con, "SELECT * FROM products WHERE id_producto='$id_producto'");
+    $row = mysqli_fetch_array($query);
 } else {
-	die("Producto no existe");
+    die("Producto no existe");
 }
-
 ?>
+
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
-	<?php include("head.php"); ?>
+    <?php include("head.php"); ?>
 </head>
-
 <body>
-	<?php
-	include("navbar.php");
-	include("modal/agregar_stock.php");
-	include("modal/eliminar_stock.php");
-	include("modal/editar_productos.php");
+<?php
+include("navbar.php");
+include("modal/agregar_stock.php");
+include("modal/eliminar_stock.php");
+include("modal/editar_productos.php");
+?>
 
-	?>
+<div class="container">
+    <!-- Modal para ampliar imagen -->
+    <div class="modal fade" id="imagenModal" tabindex="-1" role="dialog" aria-labelledby="imagenModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <img id="imagen-ampliada" src="" class="img-responsive img-thumbnail" style="margin: 0 auto; max-height: 80vh;">
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-4 col-sm-offset-2 text-center">
+                            <?php $imagen_producto = !empty($row['imagen']) ? $row['imagen'] : 'img/stock.png'; ?>
+                            <a href="#" data-imagen="<?php echo $imagen_producto; ?>" data-toggle="modal" data-target="#imagenModal">
+                                <img class="item-img img-responsive" src="<?php echo $imagen_producto; ?>" alt="Imagen del producto" style="max-height:200px;">
+                            </a>
+                            <br>
+                            <a href="#" class="btn btn-danger" onclick="eliminar('<?php echo $row['id_producto'];?>')" title="Eliminar">
+                                <i class="glyphicon glyphicon-trash"></i> Eliminar
+                            </a>
+                            <a href="#myModal2" data-toggle="modal"
+                               data-codigo='<?php echo $row['codigo_producto'];?>'
+                               data-nombre='<?php echo $row['nombre_producto'];?>'
+                               data-categoria='<?php echo $row['id_categoria']?>'
+                               data-precio='<?php echo $row['precio_producto_cons_final']?>'
+                               data-precio2='<?php echo $row['precio_producto_reventa']?>'
+                               data-stock='<?php echo $row['stock'];?>'
+                               data-id='<?php echo $row['id_producto'];?>'
+                               class="btn btn-info" title="Editar">
+                                <i class="glyphicon glyphicon-pencil"></i> Editar
+                            </a>
+                        </div>
 
-		<div class="row">
-			<div class="col-md-12">
-				<div class="panel panel-default">
-					<div class="panel-body">
-						<div class="row">
-							<div class="col-sm-4 col-sm-offset-2 text-center">
-								<img class="item-img img-responsive" src="img/stock.png" alt="">
-								<br>
-								<a href="#" class="btn btn-danger" onclick="eliminar('<?php echo $row['id_producto']; ?>')" title="Eliminar"> <i class="glyphicon glyphicon-trash"></i> Eliminar </a>
-								<a href="#myModal2" data-toggle="modal" data-codigo='<?php echo $row['codigo_producto']; ?>' data-nombre='<?php echo $row['nombre_producto']; ?>' data-categoria='<?php echo $row['id_categoria'] ?>' data-precio='<?php echo number_format($row['precio_producto_cons_final'], 2, '.', ''); ?>' data-precio2='<?php echo number_format($row['precio_producto_reventa'], 2, '.', ''); ?>' data-stock='<?php echo $row['stock']; ?>' data-id='<?php echo $row['id_producto']; ?>' class="btn btn-info" title="Editar"> <i class="glyphicon glyphicon-pencil"></i> Editar </a>
+                        <div class="col-sm-4 text-left">
+                            <div class="row margin-btm-20">
+                                <div class="col-sm-12"><span class="item-title"><?php echo $row['nombre_producto']; ?></span></div>
+                                <div class="col-sm-12"><span class="item-number">Código de producto <?php echo $row['codigo_producto']; ?></span></div>
+                                <div class="col-sm-12"><span class="current-stock">Stock disponible</span></div>
+                                <div class="col-sm-12"><span class="item-quantity" id="stock_disponible"><?php echo number_format($row['stock']); ?></span></div>
+                                <div class="col-sm-12"><span class="current-stock">Precio consumidor final</span></div>
+                                <div class="col-sm-12"><span class="item-price">$ <?php echo number_format($row['precio_producto_cons_final'], 2); ?></span></div>
+                                <div class="col-sm-12"><span class="current-stock">Precio reventa</span></div>
+                                <div class="col-sm-12"><span class="item-price">$ <?php echo number_format($row['precio_producto_reventa'], 2); ?></span></div>
+                                <div class="col-sm-6 col-xs-6 col-md-4">
+                                    <a href="#" data-toggle="modal" data-target="#add-stock"><img width="100px" src="img/stock-in.png"></a>
+                                </div>
+                                <div class="col-sm-6 col-xs-6 col-md-4">
+                                    <a href="#" data-toggle="modal" data-target="#remove-stock"><img width="100px" src="img/stock-out.png"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-							</div>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-12 text-left" style="padding-left: 25px;padding-right:25px;">
+                            <?php if (isset($message)): ?>
+                                <div class="alert alert-success alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+                                    <strong>Aviso!</strong> Datos procesados exitosamente.
+                                </div>
+                            <?php endif; ?>
+                            <?php if (isset($error)): ?>
+                                <div class="alert alert-danger alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+                                    <strong>Error!</strong> No se pudo procesar los datos.
+                                </div>
+                            <?php endif; ?>
 
-							<div class="col-sm-4 text-left">
-								<div class="row margin-btm-20">
-									<div class="col-sm-12">
-										<span class="item-title"> <?php echo $row['nombre_producto']; ?></span>
-									</div>
-									<div class="col-sm-12 margin-btm-10">
-										<span class="item-number">Código de producto <?php echo $row['codigo_producto']; ?></span>
-									</div>
-									<div class="col-sm-12 margin-btm-10">
-									</div>
-									<div class="col-sm-12">
-										<span class="current-stock">Stock disponible</span>
-									</div>
-									<div class="col-sm-12 margin-btm-10">
-										<span class="item-quantity" id="stock_disponible"><?php echo number_format($row['stock']); ?></span>
-									</div>
-									<div class="col-sm-12">
-										<span class="current-stock"> Precio consumidor final </span>
-									</div>
-									<div class="col-sm-12">
-										<span class="item-price">$ <?php echo number_format($row['precio_producto_cons_final'], 2); ?></span>
-									</div>
-									<div class="col-sm-12">
-										<span class="current-stock"> Precio reventa </span>
-									</div>
-									<div class="col-sm-12">
-										<span class="item-price">$ <?php echo number_format($row['precio_producto_reventa'], 2); ?></span>
-									</div>
+                            <table class='table table-bordered'>
+                                <tr><th class='text-center' colspan="7">HISTORIAL DE INVENTARIO</th></tr>
+                                <tr>
+                                    <td>Fecha</td>
+                                    <td>Hora</td>
+                                    <td>Descripción</td>
+                                    <td>Referencia</td>
+                                    <td>Detalle</td>
+                                    <td>Precio</td>
+                                    <td class='text-center'>Total</td>
+                                </tr>
+                                <?php
+                                $query = mysqli_query($con, "SELECT * FROM historial WHERE id_producto='$id_producto' ORDER BY fecha DESC LIMIT 10");
+                                while ($row = mysqli_fetch_array($query)):
+                                ?>
+                                    <tr>
+                                        <td><?php echo date('d/m/Y', strtotime($row['fecha'])); ?></td>
+                                        <td><?php echo date('H:i:s', strtotime($row['fecha'])); ?></td>
+                                        <td><?php echo $row['nota']; ?></td>
+                                        <td><?php echo $row['referencia']; ?></td>
+                                        <td><?php echo $row['detalle']; ?></td>
+                                        <td><?php echo ($row['tipo_precio'] === '') ? '-' : $row['tipo_precio']; ?></td>
+                                        <td class='text-center'><?php echo number_format($row['cantidad']); ?></td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-									<div class="col-sm-12 margin-btm-10">
-									</div>
-									<div class="col-sm-6 col-xs-6 col-md-4 ">
-										<a href="" data-toggle="modal" data-target="#add-stock"><img width="100px" src="img/stock-in.png"></a>
-									</div>
-									<div class="col-sm-6 col-xs-6 col-md-4">
-										<a href="" data-toggle="modal" data-target="#remove-stock"><img width="100px" src="img/stock-out.png"></a>
-									</div>
-									<div class="col-sm-12 margin-btm-10">
-									</div>
+    <?php include("footer.php"); ?>
+    <script type="text/javascript" src="js/productos.js"></script>
 
+    <script>
+        $("#editar_producto").submit(function(event) {
+                event.preventDefault();
+                $('#actualizar_datos').attr("disabled", true);
+                let form = $('#editar_producto')[0];
+                let formData = new FormData(form);
+                $.ajax({
+                    type: "POST",
+                    url: "ajax/editar_producto.php",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function () {
+                        $("#resultados_ajax2").html("Mensaje: Cargando...");
+                    },
+                    success: function (datos) {
+                        $("#resultados_ajax2").html(datos);
+                        $('#actualizar_datos').attr("disabled", false);
+                        setTimeout(function () {
+                            $(".alert").fadeTo(500, 0).slideUp(500, function () {
+                                $(this).remove();
+                                location.reload();
+                            });
+                        }, 3000);
+                    }
+                });
+            });
 
-								</div>
-							</div>
-						</div>
-						<br>
-						<div class="row">
+            $('#myModal2').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var modal = $(this);
+                modal.find('.modal-body #mod_codigo').val(button.data('codigo'));
+                modal.find('.modal-body #mod_nombre').val(button.data('nombre'));
+                modal.find('.modal-body #mod_categoria').val(button.data('categoria'));
+                modal.find('.modal-body #mod_precio').val(button.data('precio'));
+                modal.find('.modal-body #mod_precio_2').val(button.data('precio2'));
+                modal.find('.modal-body #mod_stock').val(button.data('stock'));
+                modal.find('.modal-body #mod_id').val(button.data('id'));
+            });
+            
+        $(document).on('click', '[data-toggle="modal"][data-imagen]', function (e) {
+            e.preventDefault();
+            var imagen = $(this).data('imagen');
+            $('#imagen-ampliada').attr('src', imagen);
+            $('#imagenModal').modal('show');
+        });
 
-							<div class="col-sm-12  text-left" style="padding-left: 25px;padding-right:25px;">
-								<div class="row">
-									<?php
-									if (isset($message)) {
-									?>
-										<div class="alert alert-success alert-dismissible" role="alert">
-											<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-											<strong>Aviso!</strong> Datos procesados exitosamente.
-										</div>
-									<?php
-									}
-									if (isset($error)) {
-									?>
-										<div class="alert alert-danger alert-dismissible" role="alert">
-											<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-											<strong>Error!</strong> No se pudo procesar los datos.
-										</div>
-									<?php
-									}
-									?>
-									<table class='table table-bordered'>
-										<tr>
-											<th class='text-center' colspan=6>HISTORIAL DE INVENTARIO</th>
-										</tr>
-										<tr>
-											<td>Fecha</td>
-											<td>Hora</td>
-											<td>Descripción</td>
-											<td>Referencia</td>
-											<td>Detalle</td>
-											<td style="width: 20%;">Precio</td>
-											<td class='text-center'>Total</td>
-										</tr>
-										<?php
-										$query = mysqli_query($con, "select * from historial where id_producto='$id_producto' order by fecha desc LIMIT 10");
-										while ($row = mysqli_fetch_array($query)) {
-										?>
-											<tr>
-												<td><?php echo date('d/m/Y', strtotime($row['fecha'])); ?></td>
-												<td><?php echo date('H:i:s', strtotime($row['fecha'])); ?></td>
-												<td><?php echo $row['nota']; ?></td>
-												<td><?php echo $row['referencia']; ?></td>
-												<td><?php echo $row['detalle']; ?></td>
-												<td><?php echo ($row['tipo_precio'] === '') ? '-' : $row['tipo_precio']; ?></td>
-												<td class='text-center'><?php echo number_format($row['cantidad']); ?></td>
-											</tr>
-										<?php
-										}
-										?>
-									</table>
-								</div>
-
-
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-
-
-	</div>
-
-
-	<?php
-	include("footer.php");
-	?>
-	<script type="text/javascript" src="js/productos.js"></script>
+        function eliminar(id) {
+            if (confirm("Realmente deseas eliminar el producto")) {
+                location.replace('stock.php?delete=' + id);
+            }
+        }
+    </script>
+</div>
 </body>
-
 </html>
-<script>
-	$("#editar_producto").submit(function(event) {
-		$('#actualizar_datos').attr("disabled", true);
-
-		var parametros = $(this).serialize();
-		$.ajax({
-			type: "POST",
-			url: "ajax/editar_producto.php",
-			data: parametros,
-			beforeSend: function(objeto) {
-				$("#resultados_ajax2").html("Mensaje: Cargando...");
-			},
-			success: function(datos) {
-				$("#resultados_ajax2").html(datos);
-				$('#actualizar_datos').attr("disabled", false);
-
-				location.replace('producto.php?id=' + $('#mod_id').val());
-			}
-		});
-		event.preventDefault();
-	})
-
-	$('#myModal2').on('show.bs.modal', function(event) {
-		var button = $(event.relatedTarget) // Button that triggered the modal
-		var codigo = button.data('codigo') // Extract info from data-* attributes
-		var nombre = button.data('nombre')
-		var categoria = button.data('categoria')
-		var precio = button.data('precio')
-		var precio2 = button.data('precio2')
-		var stock = button.data('stock')
-		var id = button.data('id')
-		var modal = $(this)
-		modal.find('.modal-body #mod_codigo').val(codigo)
-		modal.find('.modal-body #mod_nombre').val(nombre)
-		modal.find('.modal-body #mod_categoria').val(categoria)
-		modal.find('.modal-body #mod_precio').val(precio)
-		modal.find('.modal-body #mod_precio_2').val(precio2)
-		modal.find('.modal-body #mod_stock').val(stock)
-		modal.find('.modal-body #mod_id').val(id)
-	})
-
-	function eliminar(id) {
-		var q = $("#q").val();
-		if (confirm("Realmente deseas eliminar el producto")) {
-			location.replace('stock.php?delete=' + id);
-		}
-	}
-</script>
-
-<script>
-	$(document).ready(function() {
-		function syncPrecio() {
-			let motivo = $('#reference_remove').val();
-			if (motivo === 'Otros motivos') {
-				let select = $('#reference_remove_2_select option:selected');
-				let tipo = select.data('type'); // "consumidor final" o "reventa"
-				let valor = select.val(); // ejemplo: "31,049.00"
-				let resultado = tipo + " $ " + valor;
-				$('#reference_remove_2').val(resultado);
-			} else {
-
-				let select = $('#reference_remove_2_select option:selected');
-				let tipo = select.data('type'); // "consumidor final" o "reventa"
-				let valor = select.val(); // ejemplo: "31,049.00"
-				let resultado = tipo + " $ " + valor;
-				$('#reference_remove_2').val(resultado);
-
-			}
-		}
-
-		$('#reference_remove').on('change', function() {
-			if ($(this).val() === 'Otros motivos') {
-				//$('#reference_remove_2_select').hide();
-				$('#reference_remove_2_input').show().prop('required', true);
-				//$('#label_precio').hide();
-				$('#label_motivo_adicional').show();
-			} else {
-				$('#reference_remove_2_input').hide().val('').prop('required', false);
-				$('#reference_remove_2_select').show();
-				$('#label_precio').show();
-				$('#label_motivo_adicional').hide();
-			}
-			syncPrecio();
-		});
-
-		$('#reference_remove_2_select, #reference_remove_2_input').on('input change', function() {
-			syncPrecio();
-		});
-
-		$('form').on('submit', function() {
-			syncPrecio();
-		});
-	});
-</script>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const quantityInput = document.getElementById('quantity_remove');
-    const stockSpan = document.getElementById('stock_disponible');
-
-    function obtenerStockDisponible() {
-      // Quita puntos de miles y convierte coma decimal a punto
-      const raw = stockSpan.textContent.replace(/\./g, '').replace(',', '.');
-      return parseFloat(raw);
-    }
-
-    quantityInput.addEventListener('input', function () {
-      const cantidad = parseFloat(this.value);
-      const stockDisponible = obtenerStockDisponible();
-
-      if (cantidad <= 0 || isNaN(cantidad)) {
-        alert('La cantidad debe ser un número positivo.');
-        this.value = '';
-        return;
-      }
-
-      if (cantidad > stockDisponible) {
-        alert('La cantidad solicitada es mayor al stock disponible (' + stockDisponible + ').');
-        this.value = '';
-      }
-    });
-  });
-</script>

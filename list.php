@@ -47,6 +47,16 @@ $title = "Inventario | Simple Stock";
 			margin-bottom: 0px;
 			margin-top: 10px;
 		}
+		
+		.thumbnail-img {
+			border-radius: 4px;
+			transition: transform 0.2s;
+		}
+
+		.thumbnail-img:hover {
+			transform: scale(1.1);
+		}
+
 	</style>
 </head>
 
@@ -62,6 +72,7 @@ $title = "Inventario | Simple Stock";
 					<tr>
 						<th>Código</th>
 						<th>Nombre</th>
+						<th>Imagen</th> 
 						<th>Precio Cons. Final</th>
 						<th>Precio Reventa</th>
 						<th>Cantidad</th>
@@ -106,6 +117,16 @@ $title = "Inventario | Simple Stock";
 						"data": "nombre_producto"
 					},
 					{
+						"data": "imagen",
+						"render": function(data) {
+							if (data && data.trim() !== "") {
+							return `<img src="${data.trim()}" alt="Producto" class="thumbnail-img" onclick="expandImage(this)" style="cursor:pointer; max-height:60px;">`;
+							} else {
+							return `<img src="img/stock.png" alt="Producto sin imagen" class="thumbnail-img" style="max-height:60px;">`;
+							}
+					}
+					},
+					{
 						"data": "precio_producto_cons_final",
 						"render": function(data) {
 							return '$ ' + data;
@@ -135,6 +156,25 @@ $title = "Inventario | Simple Stock";
 			});
 		});
 	</script>
+			<!-- ver imagen ampliada -->
+		<div id="imageModal" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+			<div class="modal-body text-center">
+				<img id="modalImage" src="" alt="Imagen ampliada del producto" class="img-responsive" style="width: 100%;">
+
+			</div>
+			</div>
+		</div>
+		</div>
+
+		<script>
+			function expandImage(img) {
+				const src = img.getAttribute('src');
+				$('#modalImage').attr('src', src);
+				$('#imageModal').modal('show');
+			}
+		</script>
 
 </body>
 
