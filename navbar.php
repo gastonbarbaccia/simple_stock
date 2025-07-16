@@ -13,30 +13,48 @@
 					</button>
 					<a class="navbar-brand" href="#">Simple Stock</a>
 				</div>
-
-				<!-- Collect the nav links, forms, and other content for toggling -->
-				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-					<ul class="nav navbar-nav">
-						<li class="<?php if (isset($active_dashboard)) {
-										echo $active_dashboard;
-									} ?>"><a href="dashboard.php"><i class='glyphicon glyphicon-dashboard'></i> Dashboard</a></li>
-						<li class="<?php if (isset($active_listado)) {
-										echo $active_listado;
-									} ?>"><a href="list.php"><i class='glyphicon glyphicon-list'></i> Listado</a></li>
-						<li class="<?php if (isset($active_productos)) {
-										echo $active_productos;
-									} ?>"><a href="stock.php"><i class='glyphicon glyphicon-barcode'></i> Inventario</a></li>
-						<li class="<?php if (isset($active_categoria)) {
-										echo $active_categoria;
-									} ?>"><a href="categorias.php"><i class='glyphicon glyphicon-tags'></i> Categorías</a></li>
-						<li class="<?php if (isset($active_usuarios)) {
-										echo $active_usuarios;
-									} ?>"><a href="usuarios.php"><i class='glyphicon glyphicon-user'></i> Usuarios</a></li>
-					</ul>
-					<ul class="nav navbar-nav navbar-right">
-						<li><a href="login.php?logout"><i class='glyphicon glyphicon-off'></i> Salir</a></li>
-					</ul>
-				</div><!-- /.navbar-collapse -->
+				<?php
+				if ($_SESSION['user_name'] == 'cliente') {
+				?>
+					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav">
+							<li class="<?php if (isset($active_listado)) {
+											echo $active_listado;
+										} ?>"><a href="list.php"><i class='glyphicon glyphicon-list'></i> Listado</a></li>
+						</ul>
+						<ul class="nav navbar-nav navbar-right">
+							<li><a href="login.php?logout"><i class='glyphicon glyphicon-off'></i> Salir</a></li>
+						</ul>
+					</div><!-- /.navbar-collapse -->
+				<?php
+				} else {
+				?>
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav">
+							<li class="<?php if (isset($active_dashboard)) {
+											echo $active_dashboard;
+										} ?>"><a href="dashboard.php"><i class='glyphicon glyphicon-dashboard'></i> Dashboard</a></li>
+							<li class="<?php if (isset($active_listado)) {
+											echo $active_listado;
+										} ?>"><a href="list.php"><i class='glyphicon glyphicon-list'></i> Listado</a></li>
+							<li class="<?php if (isset($active_productos)) {
+											echo $active_productos;
+										} ?>"><a href="stock.php"><i class='glyphicon glyphicon-barcode'></i> Inventario</a></li>
+							<li class="<?php if (isset($active_categoria)) {
+											echo $active_categoria;
+										} ?>"><a href="categorias.php"><i class='glyphicon glyphicon-tags'></i> Categorías</a></li>
+							<li class="<?php if (isset($active_usuarios)) {
+											echo $active_usuarios;
+										} ?>"><a href="usuarios.php"><i class='glyphicon glyphicon-user'></i> Usuarios</a></li>
+						</ul>
+						<ul class="nav navbar-nav navbar-right">
+							<li><a href="login.php?logout"><i class='glyphicon glyphicon-off'></i> Salir</a></li>
+						</ul>
+					</div><!-- /.navbar-collapse -->
+				<?php
+				}
+				?>
 			</div><!-- /.container-fluid -->
 		</nav>
 	<?php

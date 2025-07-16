@@ -5,6 +5,11 @@ if (!isset($_SESSION['user_login_status']) || $_SESSION['user_login_status'] != 
 	exit;
 }
 
+if ($_SESSION['user_name'] == 'cliente') {
+	// if the user is a client, redirect to the list page
+	header("location: list.php");
+}
+
 require_once("config/db.php"); // Config DB
 require_once("config/conexion.php"); // Conexión a DB
 
