@@ -17,6 +17,7 @@ $query = mysqli_query($con, "SELECT
   p.nombre_producto,
   h.tipo_precio,
   h.cantidad,
+  h.detalle,
   CASE 
     WHEN LOWER(h.tipo_precio) LIKE '%reventa%' THEN p.precio_producto_reventa
     WHEN LOWER(h.tipo_precio) LIKE '%consumidor final%' THEN p.precio_producto_cons_final
@@ -25,7 +26,7 @@ $query = mysqli_query($con, "SELECT
 FROM historial h
 JOIN users u ON h.user_id = u.user_id
 JOIN products p ON h.id_producto = p.id_producto
-WHERE h.referencia LIKE '%venta%'
+WHERE h.referencia LIKE '%venta%' OR h.referencia LIKE '%Otros%'
 ORDER BY h.fecha DESC;
 ");
 

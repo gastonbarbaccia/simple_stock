@@ -54,7 +54,7 @@
           <div class="form-group">
             <label for="reference_remove" class="col-sm-2 control-label" id="label_motivo_adicional" style="display:none;">Detalle</label>
             <div class="col-sm-6">
-              <input type="text" class="form-control" id="reference_remove_2_input" style="display:none;" placeholder="Detalle el motivo..." />
+              <input type="text" class="form-control" id="reference_remove_2_input" name="reference_remove_2_input" style="display:none;" placeholder="Detalle el motivo..." />
             </div>
           </div>
         </div>

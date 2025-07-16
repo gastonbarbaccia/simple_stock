@@ -26,7 +26,8 @@ if (isset($_POST['reference']) and isset($_POST['quantity'])) {
 	date_default_timezone_set('America/Argentina/Buenos_Aires');
 	$fecha = date("Y-m-d H:i:s");
 	$tipo_precio = '';
-	guardar_historial($id_producto, $user_id, $fecha, $nota, $reference, $tipo_precio, $quantity);
+	$detalle = '';
+	guardar_historial($id_producto, $user_id, $fecha, $nota, $reference,$detalle, $tipo_precio, $quantity);
 	$update = agregar_stock($id_producto, $quantity);
 	if ($update == 1) {
 		$_SESSION['message'] = 'success';
@@ -47,7 +48,8 @@ if (isset($_POST['reference_remove']) and isset($_POST['quantity_remove'])) {
 	date_default_timezone_set('America/Argentina/Buenos_Aires');
 	$fecha = date("Y-m-d H:i:s");
 	$tipo_precio = $_POST['reference_remove_2'];
-	guardar_historial($id_producto, $user_id, $fecha, $nota, $reference, $tipo_precio, $quantity);
+	$detalle = $_POST['reference_remove_2_input'];
+	guardar_historial($id_producto, $user_id, $fecha, $nota, $reference, $detalle, $tipo_precio, $quantity);
 	$update = eliminar_stock($id_producto, $quantity);
 
 	if ($update == 1) {
@@ -177,6 +179,7 @@ if (isset($_GET['id'])) {
 											<td>Hora</td>
 											<td>Descripción</td>
 											<td>Referencia</td>
+											<td>Detalle</td>
 											<td style="width: 20%;">Precio</td>
 											<td class='text-center'>Total</td>
 										</tr>
@@ -189,6 +192,7 @@ if (isset($_GET['id'])) {
 												<td><?php echo date('H:i:s', strtotime($row['fecha'])); ?></td>
 												<td><?php echo $row['nota']; ?></td>
 												<td><?php echo $row['referencia']; ?></td>
+												<td><?php echo $row['detalle']; ?></td>
 												<td><?php echo ($row['tipo_precio'] === '') ? '-' : $row['tipo_precio']; ?></td>
 												<td class='text-center'><?php echo number_format($row['cantidad']); ?></td>
 											</tr>

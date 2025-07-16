@@ -47,6 +47,17 @@ $title = "Inventario | Simple Stock";
 			margin-bottom: 0px;
 			margin-top: 10px;
 		}
+
+		#miTabla td:nth-child(10) {
+			white-space: normal;
+			word-wrap: break-word;
+			overflow-wrap: break-word;
+		}
+
+		#miTabla th:nth-child(10) {
+			white-space: normal;
+		}
+	</style>
 	</style>
 </head>
 
@@ -81,34 +92,44 @@ $title = "Inventario | Simple Stock";
 				</label>
 
 				<label>Tipo Precio:<br>
-					<select class="form-control" id="tipo_precio_filtro">
+					<select class="form-control" id="tipo_precio_filtro" name="tipo_precio_filtro">
 						<option value="">Todos</option>
-						<option value="Consumidor Final">Consumidor Final</option>
-						<option value="Reventa">Reventa</option>
+						<option value="consumidor Final">Consumidor Final</option>
+						<option value="reventa">Reventa</option>
+					</select>
+				</label>
+
+				<label>Otros motivos:<br>
+					<select class="form-control" id="tipo_precio_filtro2" name="tipo_precio_filtro2">
+						<option value="">Todos</option>
+						<option value="otros motivos">Otros motivos</option>
 					</select>
 				</label>
 
 				<label>Total:<br>
-					<input style="color:green" class="form-control" type="text" id="totalFiltrado" readonly/>
+					<input style="color:green" class="form-control" type="text" id="totalFiltrado" readonly />
 				</label>
 			</div>
 
-
-			<table id="miTabla" class="table table-hover">
-				<thead>
-					<tr>
-						<th>Fecha</th>
-						<th>Usuario</th>
-						<th>Código</th>
-						<th>Producto</th>
-						<th>Tipo Precio</th>
-						<th>Precio</th>
-						<th>Cantidad</th>
-						<th>Total</th>
-					</tr>
-				</thead>
-				<tbody></tbody>
-			</table>
+			<div class="table-responsive">
+				<table id="miTabla" class="table table-hover" style="table-layout: fixed;">
+					<thead>
+						<tr>
+							<th>Fecha</th>
+							<th>Usuario</th>
+							<th>Código</th>
+							<th>Producto</th>
+							<th>Tipo Precio</th>
+							<th>Precio</th>
+							<th>Cantidad</th>
+							<th>Total</th>
+							<th>Referencia</th>
+							<th>Detalle</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 
@@ -135,6 +156,7 @@ $title = "Inventario | Simple Stock";
 		$(document).ready(function() {
 			// Inicializo DataTable y guardo referencia
 			var table = $('#miTabla').DataTable({
+				autoWidth: false,
 				"ajax": {
 					"url": "ajax/productos_dashboard.php",
 					"dataSrc": ""
@@ -184,7 +206,54 @@ $title = "Inventario | Simple Stock";
 								maximumFractionDigits: 2
 							});
 						}
+					},
+					{
+						"data": "referencia"
+					},
+					{
+						"data": "detalle"
 					}
+				],
+				columnDefs: [{
+						width: "100px",
+						targets: 0
+					}, // Fecha
+					{
+						width: "150px",
+						targets: 1
+					}, // Usuario
+					{
+						width: "90px",
+						targets: 2
+					}, // Código
+					{
+						width: "250px",
+						targets: 3
+					}, // Producto
+					{
+						width: "120px",
+						targets: 4
+					}, // Tipo Precio
+					{
+						width: "80px",
+						targets: 5
+					}, // Precio
+					{
+						width: "80px",
+						targets: 6
+					}, // Cantidad
+					{
+						width: "90px",
+						targets: 7
+					}, // Total
+					{
+						width: "150px",
+						targets: 8
+					}, // Referencia
+					{
+						width: "150px",
+						targets: 9
+					} // Detalle
 				],
 				"language": {
 					"url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
@@ -197,17 +266,27 @@ $title = "Inventario | Simple Stock";
 				const fechaFin = $('#fecha_fin').val();
 				const usuarioFiltro = $('#usuario_filtro').val().toLowerCase();
 				const tipoPrecioFiltro = $('#tipo_precio_filtro').val().toLowerCase();
+				const motivoFiltro = $('#tipo_precio_filtro2').val().toLowerCase();
 
-				const fecha = data[0]; // fecha en columna 0
-				const usuario = data[1].toLowerCase(); // usuario en columna 1
-				const tipoPrecio = data[4].toLowerCase(); // tipo_precio en columna 4
+				const fecha = data[0]; // Fecha
+				const usuario = data[1].toLowerCase(); // Usuario
+				const tipoPrecio = data[4].toLowerCase(); // Tipo Precio
+				const referencia = data[8].toLowerCase(); // Referencia (donde está el motivo)
 
 				const fechaRow = new Date(fecha);
 
+				// Filtros por fecha
 				if (fechaInicio && fechaRow < new Date(fechaInicio)) return false;
 				if (fechaFin && fechaRow > new Date(fechaFin)) return false;
+
+				// Filtro por usuario
 				if (usuarioFiltro && usuario !== usuarioFiltro) return false;
+
+				// Filtro por tipo de precio (columna 4)
 				if (tipoPrecioFiltro && tipoPrecio !== tipoPrecioFiltro) return false;
+
+				// Filtro por "Otros motivos" en la referencia (columna 8)
+				if (motivoFiltro && !referencia.includes(motivoFiltro)) return false;
 
 				return true;
 			});
@@ -242,7 +321,7 @@ $title = "Inventario | Simple Stock";
 			table.on('draw', actualizarTotal);
 
 			// Redibujar tabla al cambiar filtros
-			$('#fecha_inicio, #fecha_fin, #usuario_filtro, #tipo_precio_filtro').on('change', function() {
+			$('#fecha_inicio, #fecha_fin, #usuario_filtro, #tipo_precio_filtro, #tipo_precio_filtro2').on('change', function() {
 				table.draw();
 			});
 
