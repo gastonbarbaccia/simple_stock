@@ -24,7 +24,8 @@ $title = "Inventario | Simple Stock";
 
 	<!-- Estilos opcionales -->
 	<style>
-		html, body {
+		html,
+		body {
 			height: 100%;
 			margin: 0;
 			display: flex;
@@ -46,6 +47,16 @@ $title = "Inventario | Simple Stock";
 			margin-bottom: 0px;
 			margin-top: 10px;
 		}
+		
+		.thumbnail-img {
+			border-radius: 4px;
+			transition: transform 0.2s;
+		}
+
+		.thumbnail-img:hover {
+			transform: scale(1.1);
+		}
+
 	</style>
 </head>
 
@@ -61,36 +72,14 @@ $title = "Inventario | Simple Stock";
 					<tr>
 						<th>Código</th>
 						<th>Nombre</th>
+						<th>Imagen</th> 
 						<th>Precio Cons. Final</th>
 						<th>Precio Reventa</th>
 						<th>Cantidad</th>
 						<th>Categoría</th>
 					</tr>
 				</thead>
-				<tbody>
-					<?php
-					$query = mysqli_query($con, "SELECT products.*, categorias.nombre_categoria
-						FROM products
-						INNER JOIN categorias ON products.id_categoria = categorias.id_categoria;");
-					while ($row = mysqli_fetch_array($query)) {
-						$stockDisplay = ($row['stock'] == 0)
-							? '<span style="color: red;"><b>Sin stock</b></span>'
-							: $row['stock'];
-
-						$precioConsFinal = number_format($row['precio_producto_cons_final'], 2);
-						$precioReventa   = number_format($row['precio_producto_reventa'], 2);
-
-						echo "<tr>
-							<td>{$row['codigo_producto']}</td>
-							<td>{$row['nombre_producto']}</td>
-							<td>$ {$precioConsFinal}</td>
-							<td>$ {$precioReventa}</td>
-							<td>{$stockDisplay}</td>
-							<td>{$row['nombre_categoria']}</td>
-						</tr>";
-					}
-					?>
-				</tbody>
+				<tbody></tbody>
 			</table>
 		</div>
 	</div>
@@ -113,16 +102,79 @@ $title = "Inventario | Simple Stock";
 	<!-- DataTables JS -->
 	<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
-	<!-- Inicialización de DataTables -->
+	<!-- Inicialización de DataTables con AJAX -->
 	<script>
 		$(document).ready(function() {
 			$('#miTabla').DataTable({
-				language: {
-					url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+				"ajax": {
+					"url": "ajax/listado_productos.php",
+					"dataSrc": ""
+				},
+				"columns": [{
+						"data": "codigo_producto"
+					},
+					{
+						"data": "nombre_producto"
+					},
+					{
+						"data": "imagen",
+						"render": function(data) {
+							if (data && data.trim() !== "") {
+							return `<img src="${data.trim()}" alt="Producto" class="thumbnail-img" onclick="expandImage(this)" style="cursor:pointer; max-height:60px;">`;
+							} else {
+							return `<img src="img/stock.png" alt="Producto sin imagen" class="thumbnail-img" style="max-height:60px;">`;
+							}
+					}
+					},
+					{
+						"data": "precio_producto_cons_final",
+						"render": function(data) {
+							return '$ ' + data;
+						}
+					},
+					{
+						"data": "precio_producto_reventa",
+						"render": function(data) {
+							return '$ ' + data;
+						}
+					},
+					{
+						"data": "stock",
+						"render": function(data) {
+							return (parseInt(data) <= 0) ?
+								'<span style="color: red;"><b>Sin stock</b></span>' :
+								data;
+						}
+					},
+					{
+						"data": "nombre_categoria"
+					}
+				],
+				"language": {
+					"url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
 				}
 			});
 		});
 	</script>
+			<!-- ver imagen ampliada -->
+		<div id="imageModal" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+			<div class="modal-body text-center">
+				<img id="modalImage" src="" alt="Imagen ampliada del producto" class="img-responsive" style="width: 100%;">
+
+			</div>
+			</div>
+		</div>
+		</div>
+
+		<script>
+			function expandImage(img) {
+				const src = img.getAttribute('src');
+				$('#modalImage').attr('src', src);
+				$('#imageModal').modal('show');
+			}
+		</script>
 
 </body>
 

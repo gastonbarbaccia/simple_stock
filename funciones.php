@@ -6,10 +6,10 @@ function get_row($table,$row, $id, $equal){
 	$value=$rw[$row];
 	return $value;
 }
-function guardar_historial($id_producto,$user_id,$fecha,$nota,$reference,$tipo_precio,$quantity){
+function guardar_historial($id_producto,$user_id,$fecha,$nota,$reference,$detalle,$tipo_precio,$quantity){
 	global $con;
-	$sql="INSERT INTO historial (id_historial, id_producto, user_id, fecha, nota, referencia, tipo_precio, cantidad)
-	VALUES (NULL, '$id_producto', '$user_id', '$fecha', '$nota', '$reference', '$tipo_precio', '$quantity');";
+	$sql="INSERT INTO historial (id_historial, id_producto, user_id, fecha, nota, referencia, detalle, tipo_precio, cantidad)
+	VALUES (NULL, '$id_producto', '$user_id', '$fecha', '$nota', '$reference', '$detalle', '$tipo_precio', '$quantity');";
 	$query=mysqli_query($con,$sql);
 	
 	
